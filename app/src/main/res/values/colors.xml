@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FF9800</color>
+    <color name="colorPrimaryDark">#F57C00</color>
+    <color name="colorPrimaryLight">#FFE0B2</color>
+    <color name="colorAccent">#9E9E9E</color>
+    <color name="textColor">#212121</color>
+    <color name="textColorLight">#FFFFFF</color>
+    <color name="secondaryTextColor">#757575</color>
+    <color name="dividerColor">#BDBDBD</color>
+
+    <color name="dialogBckgTop">@color/colorPrimaryDark</color>
+    <color name="dialogBckgBottom">@color/colorPrimary</color>
+    <color name="okButtonBckg">#FFFFFF</color>
+
+
+    <color name="receivedMessageBckg">#FFFFFF</color>
+    <color name="sentMessageBckg">@color/colorPrimaryLight</color>
+
+    <color name="inputArea">#FFFFFF</color>
+</resources>

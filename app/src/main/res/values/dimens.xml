@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="sendMessageButtonSize">32dp</dimen>
+    <dimen name="sendImageButtonSize">32dp</dimen>
+    <dimen name="generalMargin">8dp</dimen>
+    <dimen name="sendMessageButtonEndMarin">16dp</dimen>
+    <dimen name="messageCornerRadius">12dp</dimen>
+    <dimen name="avatarSize">48dp</dimen>
+    <dimen name="message_margin">16dp</dimen>
+    <dimen name="dialogCornersRadius">8dp</dimen>
+</resources>
