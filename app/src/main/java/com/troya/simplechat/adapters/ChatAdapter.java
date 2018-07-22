@@ -18,6 +18,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
     private static final int SENT_MESSAGE_LAYOUT = R.layout.sent_message;
 
     private List<ChatMessage> mData;
+    private RecyclerView mRecyclerView;
 
     public ChatAdapter(List<ChatMessage> data) {
         mData = data;
@@ -26,21 +27,28 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
     public void setData(List<ChatMessage> data) {
         mData = data;
         notifyDataSetChanged();
+        mRecyclerView.scrollToPosition(mData.size() - 1);
     }
 
     @NonNull
     @Override
     public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        MessageViewHolder viewHolder = null;
+        MessageViewHolder viewHolder;
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         if (viewType == ChatMessage.RECEIVED_MESSAGE_TYPE) {
             viewHolder = new MessageViewHolder(layoutInflater.inflate(RECEIVED_MESSAGE_LAYOUT, parent, false));
         }
-        else if (viewType == ChatMessage.SENT_MESSAGE_TYPE) {
+        else  {
             viewHolder = new MessageViewHolder(layoutInflater.inflate(SENT_MESSAGE_LAYOUT, parent, false));
         }
 
         return viewHolder;
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        mRecyclerView = recyclerView;
     }
 
     @Override
@@ -63,7 +71,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
         TextView messageTextView;
         TextView messageTimeView;
 
-        public MessageViewHolder(View itemView) {
+        MessageViewHolder(View itemView) {
             super(itemView);
             messageTextView = itemView.findViewById(R.id.txtMessage);
             messageTimeView = itemView.findViewById(R.id.txtTime);

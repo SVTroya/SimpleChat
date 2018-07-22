@@ -21,12 +21,11 @@ import java.security.PublicKey;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+
 
 public class ChatConnection {
     private static final String TAG = ChatConnection.class.getSimpleName();
@@ -67,7 +66,7 @@ public class ChatConnection {
         connectToServer(user.getIPAddress(), user.getPort());
     }
 
-    public void connectToServer(InetAddress ipAddress, int port) {
+    private void connectToServer(InetAddress ipAddress, int port) {
         if (mChatClient == null) {
             mChatClient = new ChatClient(ipAddress, port);
         }
@@ -79,7 +78,7 @@ public class ChatConnection {
         }
     }
 
-    public void sendPublicKey() {
+    private void sendPublicKey() {
         if (mChatClient != null) {
 
             String publicKey = "-----BEGIN PUBLIC KEY-----" +
@@ -89,11 +88,11 @@ public class ChatConnection {
         }
     }
 
-    public void sendUserId() {
+    private void sendUserId() {
         if (mChatClient != null) {
 
             String userId = "-----BEGIN USER ID-----" +
-                    mCipher.publicKeyToString() +
+                    mOwner.getUserId()+
                     "-----END USER ID-----";
             mChatClient.sendMessage(userId, false);
         }
@@ -103,14 +102,14 @@ public class ChatConnection {
         return mPort;
     }
 
-    public void setLocalPort(int port) {
+    private void setLocalPort(int port) {
         mPort = port;
     }
 
-    public synchronized void saveMessages(String msg, User user, byte messageType) {
+    private synchronized void saveMessages(String msg, int messageType) {
         Log.e(TAG, "Updating chat: " + msg);
 
-        ChatMessage message = new ChatMessage(msg, messageType, user.getUserId());
+        ChatMessage message = new ChatMessage(msg, messageType, mSelectedUser.getUserId());
         message.setTime(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(Calendar.getInstance().getTime()));
         mCallback.onMessageSave(message);
     }
@@ -137,7 +136,7 @@ public class ChatConnection {
         return mSocket;
     }
 
-    private class ChatServer {
+    private class ChatServer{
         private static final String SERVER_TAG = "ServerClient";
 
         ServerSocket mServerSocket = null;
@@ -153,7 +152,7 @@ public class ChatConnection {
             try {
                 mServerSocket.close();
             } catch (IOException ex) {
-                Log.e(TAG, "Error while closing server socket.");
+                Log.e(SERVER_TAG, "Error while closing server socket.");
             }
         }
 
@@ -164,9 +163,9 @@ public class ChatConnection {
                     mServerSocket = new ServerSocket(0);
                     setLocalPort(mServerSocket.getLocalPort());
                     while (!Thread.currentThread().isInterrupted()) {
-                        Log.d(TAG, "ServerSocket Created, awaiting connection");
+                        Log.d(SERVER_TAG, "ServerSocket Created, awaiting connection");
                         setSocket(mServerSocket.accept());
-                        Log.d(TAG, "Connected.");
+                        Log.d(SERVER_TAG, "Connected.");
                         if (mChatClient == null) {
                             int port = mSocket.getPort();
                             InetAddress address = mSocket.getInetAddress();
@@ -177,7 +176,7 @@ public class ChatConnection {
                         }
                     }
                 } catch (IOException ex) {
-                    Log.e(TAG, "Error creating ServerSocket: ", ex);
+                    Log.e(SERVER_TAG, "Error creating ServerSocket: ", ex);
                     ex.printStackTrace();
                 }
             }
@@ -201,14 +200,6 @@ public class ChatConnection {
         }
 
         class SendingThread implements Runnable {
-            private static final int QUEUE_CAPACITY = 10;
-
-            BlockingQueue<String> mMessageQueue;
-
-            public SendingThread() {
-                mMessageQueue = new ArrayBlockingQueue<>(QUEUE_CAPACITY);
-            }
-
             @Override
             public void run() {
                 try {
@@ -226,18 +217,8 @@ public class ChatConnection {
                     Log.d(CLIENT_TAG, "Initializing socket failed, IOE.", e);
                 }
 
-                sendPublicKey();
                 sendUserId();
-                mCallback.onConnection(mSelectedUser);
-
-                while (true) {
-                    try {
-                        String msg = mMessageQueue.take();
-                        sendMessage(msg, true);
-                    } catch (InterruptedException ie) {
-                        Log.d(CLIENT_TAG, "ChatMessage sending loop interrupted, exiting");
-                    }
-                }
+                sendPublicKey();
             }
         }
 
@@ -259,12 +240,12 @@ public class ChatConnection {
                                 mSelectedUserPublicKey = RSACipher.stringToPublicKey(msg);
                             } else if (msg.contains("-----BEGIN USER ID-----") && msg.contains("-----END USER ID-----")) {
                                 mSelectedUser.setUserId(msg.replace("-----BEGIN USER ID-----", "").replace("-----END USER ID-----", ""));
+                                mCallback.onConnection(mSelectedUser);
                             } else {
                                 String decryptedMessage = mCipher.decrypt(msg);
-                                saveMessages(decryptedMessage, mSelectedUser, ChatMessage.SENT_MESSAGE_TYPE);
+                                saveMessages(decryptedMessage, ChatMessage.RECEIVED_MESSAGE_TYPE);
                             }
-                        }
-                        else {
+                        } else {
                             Log.d(CLIENT_TAG, "Message is null!!");
                             break;
                         }
@@ -272,7 +253,8 @@ public class ChatConnection {
                     input.close();
                 } catch (IOException e) {
                     Log.e(CLIENT_TAG, "Server loop error: ", e);
-                } catch (NoSuchPaddingException | IllegalBlockSizeException
+                }
+                catch (NoSuchPaddingException | IllegalBlockSizeException
                         | BadPaddingException | InvalidKeyException
                         | NoSuchAlgorithmException e) {
                     e.printStackTrace();
@@ -288,7 +270,7 @@ public class ChatConnection {
             }
         }
 
-        public void sendMessage(String msg, boolean shouldEncode) {
+        public void sendMessage(String msg, boolean isChatMessage) {
             try {
                 Socket socket = getSocket();
                 if (socket == null) {
@@ -301,22 +283,25 @@ public class ChatConnection {
                         new BufferedWriter(
                                 new OutputStreamWriter(getSocket().getOutputStream())), true);
                 String preparedMessage = msg;
-                if (mSelectedUserPublicKey != null && shouldEncode) {
+                if (mSelectedUserPublicKey != null && isChatMessage) {
                     preparedMessage = mCipher.encrypt(preparedMessage,
                             mSelectedUserPublicKey);
                 }
 
                 out.println(preparedMessage);
                 out.flush();
-                if (shouldEncode) {
-                    saveMessages(msg, mOwner, ChatMessage.RECEIVED_MESSAGE_TYPE);
+                if (isChatMessage) {
+                    saveMessages(msg, ChatMessage.SENT_MESSAGE_TYPE);
                 }
             } catch (UnknownHostException ex) {
                 Log.d(CLIENT_TAG, "Unknown Host", ex);
+                ex.printStackTrace();
             } catch (IOException ex) {
                 Log.d(CLIENT_TAG, "I/O Exception", ex);
+                ex.printStackTrace();
             } catch (Exception ex) {
                 Log.d(CLIENT_TAG, "Unexpected error:", ex);
+                ex.printStackTrace();
             }
             Log.d(CLIENT_TAG, "Client sent message: " + msg);
         }

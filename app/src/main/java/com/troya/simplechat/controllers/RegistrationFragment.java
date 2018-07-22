@@ -20,7 +20,10 @@ public class RegistrationFragment extends Fragment {
     private RegistrationCallback mCallback;
 
     private EditText mUserNameView;
-    private Button mOkButton;
+
+    public static RegistrationFragment newInstance() {
+        return new RegistrationFragment();
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -31,8 +34,8 @@ public class RegistrationFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mUserNameView = view.findViewById(R.id.editUserName);
-        mOkButton = view.findViewById(R.id.btnOk);
-        mOkButton.setOnClickListener(new View.OnClickListener() {
+        Button okButton = view.findViewById(R.id.btnOk);
+        okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mCallback != null) {

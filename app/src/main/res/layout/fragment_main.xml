@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -8,23 +7,25 @@
     <android.support.v7.widget.AppCompatImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="36dp"
-        app:srcCompat="@drawable/ic_chat"
-        tools:layout_editor_absoluteX="24dp"
-        tools:layout_editor_absoluteY="24dp" />
+        android:layout_margin="@dimen/main_background_image_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_chat" />
 
     <Button
         android:id="@+id/btnSearch"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="36dp"
+        android:layout_marginStart="@dimen/generalMargin"
+        android:layout_marginEnd="@dimen/generalMargin"
+        android:layout_marginBottom="@dimen/find_user_button_bottom_margin"
         android:backgroundTint="@color/colorPrimaryDark"
-        android:text="Find Someone"
+        android:text="@string/find_user_button_text"
         android:textAllCaps="false"
-        android:textSize="18sp"
+        android:textSize="@dimen/find_user_button_text_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

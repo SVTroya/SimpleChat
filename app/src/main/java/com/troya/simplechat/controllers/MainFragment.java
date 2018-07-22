@@ -17,8 +17,6 @@ public class MainFragment extends Fragment {
     private static final int LAYOUT = R.layout.fragment_main;
     private Callback mListener;
 
-    private Button mUserSearchButton;
-
     public MainFragment() {
     }
 
@@ -27,7 +25,7 @@ public class MainFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(LAYOUT, container, false);
     }
@@ -35,11 +33,11 @@ public class MainFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mUserSearchButton = view.findViewById(R.id.btnSearch);
+        Button userSearchButton = view.findViewById(R.id.btnSearch);
 
-        mUserSearchButton.setOnClickListener(new View.OnClickListener() {
+        userSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 if (mListener != null) {
                     mListener.onSearchClick();
                 }

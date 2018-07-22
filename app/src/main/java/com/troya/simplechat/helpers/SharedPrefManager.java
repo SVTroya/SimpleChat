@@ -22,14 +22,6 @@ public class SharedPrefManager {
         editor.apply();
     }
 
-    public static void clearUserInfo(Context context) {
-        final SharedPreferences preferences = context.getSharedPreferences(PREF_FILE, MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.remove(KEY_USER_NAME);
-        editor.remove(KEY_USER_ID);
-        editor.apply();
-    }
-
     public static User getUserInfo(Context context) {
         final SharedPreferences preferences = context.getSharedPreferences(PREF_FILE, MODE_PRIVATE);
         if (preferences != null) {

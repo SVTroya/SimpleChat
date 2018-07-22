@@ -2,6 +2,7 @@ package com.troya.simplechat.controllers;
 
 import android.arch.persistence.room.Room;
 import android.net.nsd.NsdServiceInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements DeviceSearchDialo
     private NsdHelper mNsdHelper;
     private ChatConnection mConnection;
     private MainViewModel mViewModel;
-    FragmentManager mFragmentManager;
+    private FragmentManager mFragmentManager;
     private User mOwner;
 
     private User getSavedOwner() {
@@ -115,13 +116,13 @@ public class MainActivity extends AppCompatActivity implements DeviceSearchDialo
     }
 
     private void setRegistrationFragment() {
-        RegistrationFragment fragment = new RegistrationFragment();
+        RegistrationFragment fragment = RegistrationFragment.newInstance();
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
         transaction.replace(R.id.fragment, fragment).commit();
     }
 
     private void setMainFragment() {
-        MainFragment fragment = new MainFragment();
+        MainFragment fragment = MainFragment.newInstance();
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
         transaction.replace(R.id.fragment, fragment).commit();
     }
@@ -155,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements DeviceSearchDialo
 
     @Override
     public void onMessageSend(String message) {
-        mConnection.sendMessage(message);
+        new MessageSendTask().execute(message);
     }
 
     @Override
@@ -176,6 +177,13 @@ public class MainActivity extends AppCompatActivity implements DeviceSearchDialo
         user.setIPAddress(serviceInfo.getHost());
         user.setPort(serviceInfo.getPort());
         mConnection.connect(user);
-        mConnection.sendPublicKey();
+    }
+
+    class MessageSendTask extends AsyncTask<String, Void, Void> {
+
+        protected Void doInBackground(String... messages) {
+            mConnection.sendMessage(messages[0]);
+            return null;
+        }
     }
 }

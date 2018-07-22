@@ -22,6 +22,7 @@ public class RSACipher {
 
     private final static String CRYPTO_METHOD = "RSA";
     private final static int CRYPTO_BITS = 2048;
+    private static final String PROTOCOL = "RSA/ECB/OAEPWithSHA1AndMGF1Padding";
 
     private PublicKey mPublicKey;
     private PrivateKey mPrivateKey;
@@ -29,14 +30,6 @@ public class RSACipher {
 
     public RSACipher() throws NoSuchAlgorithmException{
         generateKeyPair();
-    }
-
-    public PrivateKey getPrivateKey() {
-        return mPrivateKey;
-    }
-
-    public PublicKey getPublicKey() {
-        return mPublicKey;
     }
 
     private void generateKeyPair()
@@ -56,11 +49,11 @@ public class RSACipher {
             IllegalBlockSizeException,
             BadPaddingException {
 
-        Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA1AndMGF1Padding");
+        Cipher cipher = Cipher.getInstance(PROTOCOL);
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
         byte[] encryptedBytes = cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8));
 
-        return Base64.encodeToString(encryptedBytes, Base64.DEFAULT);
+        return Base64.encodeToString(encryptedBytes, Base64.NO_WRAP | Base64.URL_SAFE);
     }
 
     public String decrypt(String encryptedText)
@@ -70,20 +63,20 @@ public class RSACipher {
             IllegalBlockSizeException,
             BadPaddingException {
 
-        Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA1AndMGF1Padding");
+        Cipher cipher = Cipher.getInstance(PROTOCOL);
         cipher.init(Cipher.DECRYPT_MODE, mPrivateKey);
-        byte[] decryptedBytes = cipher.doFinal(Base64.decode(encryptedText, Base64.DEFAULT));
+        byte[] decryptedBytes = cipher.doFinal(Base64.decode(encryptedText, Base64.NO_WRAP | Base64.URL_SAFE));
         return new String(decryptedBytes);
     }
 
     public String publicKeyToString() {
-        return Base64.encodeToString(mPublicKey.getEncoded(), Base64.DEFAULT);
+        return Base64.encodeToString(mPublicKey.getEncoded(), Base64.NO_WRAP | Base64.URL_SAFE);
     }
 
     public static PublicKey stringToPublicKey(String publicKeyString) {
 
         try {
-            byte[] keyBytes = Base64.decode(publicKeyString, Base64.DEFAULT);
+            byte[] keyBytes = Base64.decode(publicKeyString, Base64.NO_WRAP | Base64.URL_SAFE);
             X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 

@@ -20,7 +20,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/inputArea"
-        android:maxHeight="120dp"
+        android:maxHeight="@dimen/chat_message_max_height"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -33,7 +33,7 @@
             android:layout_marginTop="@dimen/generalMargin"
             android:layout_marginEnd="@dimen/generalMargin"
             android:layout_marginBottom="@dimen/generalMargin"
-            android:hint="@string/messageHint"
+            android:hint="@string/message_hint"
             android:inputType="textMultiLine"
             android:padding="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -54,4 +54,5 @@
             app:srcCompat="@drawable/ic_send_message" />
 
     </android.support.constraint.ConstraintLayout>
+
 </android.support.constraint.ConstraintLayout>

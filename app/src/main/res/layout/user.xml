@@ -11,9 +11,9 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="@dimen/generalMargin"
+        android:layout_marginTop="@dimen/generalMargin"
+        android:layout_marginBottom="@dimen/generalMargin"
         app:srcCompat="@drawable/ic_cellphone" />
 
     <TextView
@@ -21,11 +21,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Text"
+        android:layout_marginStart="@dimen/generalMargin"
+        android:layout_marginTop="@dimen/generalMargin"
+        android:layout_marginEnd="@dimen/generalMargin"
+        android:layout_marginBottom="@dimen/generalMargin"
         android:textColor="@color/textColor"
         android:textSize="18sp" />
 

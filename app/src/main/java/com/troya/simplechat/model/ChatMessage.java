@@ -12,7 +12,6 @@ public class ChatMessage {
     public static final byte SENT_MESSAGE_TYPE = 0;
     public static final byte RECEIVED_MESSAGE_TYPE = 1;
 
-    public static final String KEY_MESSAGE = "msg";
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
@@ -23,7 +22,7 @@ public class ChatMessage {
     private String mMessage;
 
     @ColumnInfo(name = "message_type")
-    private byte mMessageType;
+    private int mMessageType;
 
     @ColumnInfo(name = "message_time")
     private String mTime;
@@ -38,7 +37,7 @@ public class ChatMessage {
     }
 
     @Ignore
-    public ChatMessage(@NonNull String message, byte messageType, @NonNull String chatName) {
+    public ChatMessage(@NonNull String message, int messageType, @NonNull String chatName) {
         mMessage = message;
         mMessageType = messageType;
         mChatName = chatName;
@@ -61,11 +60,11 @@ public class ChatMessage {
         mMessage = message;
     }
 
-    public byte getMessageType() {
+    public int getMessageType() {
         return mMessageType;
     }
 
-    public void setMessageType(byte messageType) {
+    public void setMessageType(int messageType) {
         mMessageType = messageType;
     }
 

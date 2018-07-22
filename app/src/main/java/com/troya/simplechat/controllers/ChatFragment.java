@@ -49,7 +49,7 @@ public class ChatFragment extends Fragment {
         Bundle args = new Bundle();
         args.putString(KEY_CHAT_NAME, chatName);
         fragment.setArguments(args);
-        return new ChatFragment();
+        return fragment;
     }
 
     private void initViewModel() {
@@ -98,7 +98,9 @@ public class ChatFragment extends Fragment {
         });
 
         mAdapter = new ChatAdapter(null);
-        mChatView.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setStackFromEnd(true);
+        mChatView.setLayoutManager(layoutManager);
         mChatView.setAdapter(mAdapter);
 
         mViewModel.getAllMessages(mChatName).observe(this, new Observer<List<ChatMessage>>() {

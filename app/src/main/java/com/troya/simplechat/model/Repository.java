@@ -7,9 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Repository {
-
     private static ChatMessageDao mChatMessageDao;
-
     private ExecutorService mExecutorService;
 
     public Repository(ChatMessageDao chatMessageDao) {

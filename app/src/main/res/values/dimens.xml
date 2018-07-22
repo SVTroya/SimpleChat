@@ -8,4 +8,12 @@
     <dimen name="avatarSize">48dp</dimen>
     <dimen name="message_margin">16dp</dimen>
     <dimen name="dialogCornersRadius">8dp</dimen>
+    <dimen name="chat_message_max_height">120dp</dimen>
+    <dimen name="find_user_button_text_size">18sp</dimen>
+    <dimen name="main_background_image_margin">36dp</dimen>
+    <dimen name="find_user_button_bottom_margin">36dp</dimen>
+    <dimen name="enter_user_name_text_size">24sp</dimen>
+    <dimen name="enter_user_name_field_margin">24dp</dimen>
+    <dimen name="search_dialog_min_width">250dp</dimen>
+    <dimen name="search_dialog_min_height">300dp</dimen>
 </resources>

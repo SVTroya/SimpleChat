@@ -25,31 +25,11 @@ import java.util.List;
 public class DeviceSearchDialog extends DialogFragment implements View.OnClickListener, UsersListAdapter.Callback {
 
     public static final String TAG = DeviceSearchDialog.class.getSimpleName();
-
-    private static final String KEY_NSD_HELPER = "nsdHelper";
-
-    public static final int SERVICE_FOUND_CODE = 1;
-    public static final int SERVICE_LOST_CODE = 2;
-
     private static final int LAYOUT = R.layout.find_device_dialog;
-
-    private static final String SERVICE_NAME = "ClientDevice";
-    private static final String SERVICE_TYPE = "_http._tcp.";
-
-    private static final int REQUEST_CONNECT_CLIENT = 100;
-
-    private final static String KEY_REQUEST = "request";
-    private final static String KEY_IP_ADDRESS = "ipAddress";
-    private final static String KEY_CLIENT_NAME = "clientName";
 
     private DeviceSearchCallback mCallback;
     private List<NsdServiceInfo> mFoundServices = new ArrayList<>();
     private NsdServiceInfo mSelectedService;
-
-    private Button mOkButton;
-    private Button mCancelButton;
-    private RecyclerView mUserListView;
-
     private UsersListAdapter mListAdapter;
 
     public static DeviceSearchDialog newInstance() {
@@ -72,16 +52,16 @@ public class DeviceSearchDialog extends DialogFragment implements View.OnClickLi
 
         getDialog().setTitle(R.string.device_search_dialog_title);
 
-        mOkButton = view.findViewById(R.id.btnOk);
-        mCancelButton = view.findViewById(R.id.btnCancel);
-        mUserListView = view.findViewById(R.id.recyclerDevices);
+        Button okButton = view.findViewById(R.id.btnOk);
+        Button cancelButton = view.findViewById(R.id.btnCancel);
+        RecyclerView userListView = view.findViewById(R.id.recyclerDevices);
 
         mListAdapter = new UsersListAdapter(mFoundServices, this);
-        mUserListView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mUserListView.setAdapter(mListAdapter);
+        userListView.setLayoutManager(new LinearLayoutManager(getContext()));
+        userListView.setAdapter(mListAdapter);
 
-        mOkButton.setOnClickListener(this);
-        mCancelButton.setOnClickListener(this);
+        okButton.setOnClickListener(this);
+        cancelButton.setOnClickListener(this);
 
         getDialog().setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
@@ -133,16 +113,8 @@ public class DeviceSearchDialog extends DialogFragment implements View.OnClickLi
         return mFoundServices;
     }
 
-    public void setFoundServices(List<NsdServiceInfo> foundServices) {
-        mFoundServices = foundServices;
-    }
-
     public UsersListAdapter getListAdapter() {
         return mListAdapter;
-    }
-
-    public void setListAdapter(UsersListAdapter listAdapter) {
-        mListAdapter = listAdapter;
     }
 
     public interface DeviceSearchCallback {

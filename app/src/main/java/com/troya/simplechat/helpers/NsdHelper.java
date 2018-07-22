@@ -12,8 +12,8 @@ import com.troya.simplechat.model.User;
 import java.io.Serializable;
 
 public class NsdHelper implements Serializable {
-    public static final String TAG = NsdHelper.class.getSimpleName();
-    public static final String SERVICE_TYPE = "_http._tcp.";
+    private static final String TAG = NsdHelper.class.getSimpleName();
+    private static final String SERVICE_TYPE = "_http._tcp.";
 
     private NsdManager mNsdManager;
     private NsdManager.DiscoveryListener mDiscoveryListener;
@@ -37,7 +37,7 @@ public class NsdHelper implements Serializable {
         mNsdManager = (NsdManager) activity.getSystemService(Context.NSD_SERVICE);
     }
 
-    public void initializeDiscoveryListener() {
+    private void initializeDiscoveryListener() {
         mDiscoveryListener = new NsdManager.DiscoveryListener() {
             @Override
             public void onDiscoveryStarted(String regType) {
@@ -150,14 +150,12 @@ public class NsdHelper implements Serializable {
     }
 
     public void registerService(int port, User owner) {
-        tearDown();  // Cancel any previous registration request
+        tearDown();
         initializeRegistrationListener();
         NsdServiceInfo serviceInfo = new NsdServiceInfo();
         serviceInfo.setPort(port);
         serviceInfo.setServiceName(mServiceName + "//" + owner.getUserId());
         serviceInfo.setServiceType(SERVICE_TYPE);
-        /*serviceInfo.setAttribute(User.KEY_USER_ID, owner.getUserId());
-        serviceInfo.setAttribute(User.KEY_USER_NAME, owner.getUserName());*/
         mNsdManager.registerService(
                 serviceInfo, NsdManager.PROTOCOL_DNS_SD, mRegistrationListener);
     }
@@ -167,7 +165,7 @@ public class NsdHelper implements Serializable {
     }
 
     public void discoverServices(DeviceSearchDialog dialog) {
-        stopDiscovery();  // Cancel any existing discovery request
+        stopDiscovery();
         mDialog = dialog;
         initializeDiscoveryListener();
         mNsdManager.discoverServices(
